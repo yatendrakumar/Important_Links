@@ -13,6 +13,17 @@ Rasberrypi
     * http://elinux.org/RPi_Framebuffer
     * https://yangqiao.wordpress.com/2015/07/05/rtems-board-support-packages-raspberry-pi-mailbox-and-framebuffer-implementation/
     * http://magicsmoke.co.za/?p=284
+    * Screen Rotation
+			#display_rotate=0 Normal
+			display_rotate=1 90 degrees
+			#display_rotate=2 180 degrees
+			#NOTE: You can rotate both the image and touch interface 180º by entering lcd_rotate=2 instead
+			#display_rotate=3 270 degrees
+			#display_rotate=0x10000 horizontal flip
+			#display_rotate=0x20000 vertical flip
+	* Read about Phandle
+	* http://mirrors.neusoft.edu.cn/rpi-kernel/drivers/input/touchscreen/rpi-ft5406.c (Default driver for touch screen)
+	* Read touch calibration
     
 OS
     * https://www.safaribooksonline.com/library/view/understanding-the-linux/0596005652/ch04.html
