@@ -1,10 +1,19 @@
+Kernel startup
+	* http://henryomd.blogspot.in/2014/11/linux-kernel-startup.html
+
 Adding A New System Service To Android
     * http://www.linaro.org/blog/adding-a-new-system-service-to-android-5-tips-and-how-to/
     * http://www.opersys.com/blog/extending-android-hal
 
 Rasberrypi
     * http://sysprogs.com/VisualKernel/tutorials/raspberry/buildkernel/
-
+    * https://www.raspberrypi.org/documentation/installation/installing-images/linux.md
+    * https://www.raspberrypi.org/downloads/ (Default images)
+    * https://github.com/raspberrypi/firmware/wiki/Mailboxes (Mail box)
+    * http://elinux.org/RPi_Framebuffer
+    * https://yangqiao.wordpress.com/2015/07/05/rtems-board-support-packages-raspberry-pi-mailbox-and-framebuffer-implementation/
+    * http://magicsmoke.co.za/?p=284
+    
 OS
     * https://www.safaribooksonline.com/library/view/understanding-the-linux/0596005652/ch04.html
 
@@ -36,7 +45,15 @@ Block Driver:
 
 Ram Disk :
     * https://www.kernel.org/doc/Documentation/blockdev/ramdisk.txt
-
+    * http://www.tcu-inc.com/Articles/21/Ramdisk2.html
+    * https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt
+    * http://yattutime.blogspot.in/2014/02/linux-boot-process.html
+    Table: Comparison of ramfs and tmpfs Experimentation    Tmpfs   Ramfs
+    |       Experimentation                      |      Tmpfs           |       Ramfs           |
+    | Fill maximum space and continue writing    |  Will display error  | Will continue writing |
+    |       Fixed Size                           |      Yes             |           No          |
+    |       Uses Swap                            |      Yes             |           No          |
+    |       Volatile Storage                     |      Yes             |           Yes         |
 
 Block Driver:
 	* http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31/
@@ -50,11 +67,12 @@ Ram Disk:
      * http://lxr.free-electrons.com/source/drivers/block/rd.c?v=2.4.37
      * https://blulin.wordpress.com/2008/11/28/tips-to-create-ramdisk-in-a-linux-system/
      * http://www.linuxjournal.com/article/2890?page=0,0
-Jtag Setup
 
+Jtag Setup
     * http://sysprogs.com/VisualKernel/tutorials/raspberry/jtagsetup/
 
 Ram Disk
+    * man initrd
     * https://kernel.org/doc/Documentation/blockdev/ramdisk.txt
     * http://opensourceforu.efytimes.com/2012/02/device-drivers-disk-on-ram-block-drivers/
     * http://www.vanemery.com/Linux/Ramdisk/ramdisk.html
