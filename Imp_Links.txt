@@ -1,3 +1,22 @@
+I2c
+	* https://learn.sparkfun.com/tutorials/i2c/all.pdf (Pdf)
+	* https://learn.sparkfun.com/tutorials/i2c
+	* http://www.slideshare.net/varunmahajan06/i2c-subsystem-in-linux2624
+	* http://www.esacademy.com/en/library/technical-articles-and-documents/miscellaneous/i2c-bus/general-introduction/bus-arbitration.html
+
+Virtual box
+	* Virtual box screen size problem
+		> Install few packages in your virtual box OS (Ubuntu) 
+			sudo apt-get remove libcheese-gtk23
+			then sudo apt-get install xserver-xorg-coreand 
+			finally, sudo apt-get install -f virtualbox-guest-x11
+	* Vitual Box folder sharing
+		> Run Virtual Box Os 
+		> Open File Browser or Explorer
+		> Click on "Connect to server" (Server is nothing your host pc from where you have run virtual box)
+		> Enter Server Address like "sftp://172.16.9.58/home/yatendra" (~/ is now folder to share)
+		> Click on Connect and enter user name and password of the server
+
 Kernel startup
 	* http://henryomd.blogspot.in/2014/11/linux-kernel-startup.html
 
@@ -5,9 +24,41 @@ Adding A New System Service To Android
     * http://www.linaro.org/blog/adding-a-new-system-service-to-android-5-tips-and-how-to/
     * http://www.opersys.com/blog/extending-android-hal
 
+Dts and Dtsi difference
+	* .dts files :
+		- All Board-level definitions go here
+		- These files are final Device Tree
+		- dtc will process the dts files into a binary for the kernel
+		- specific syntax is used
+
+	* .dtsi files :
+		- SoC definitions go here
+		- These files are included files
+	* dtsi file is just a dts include file. It can be included in multiple dts files.
+	* The linux kernel requires the entire description of the hardware, like which board it is booting(machine type), which all devices it is using there 			addresses(device/bus addresses), there interrupts numbers(irq), mfp pins configuration(pin muxing/gpios) also some board level information like 		memory size, kernel command line etc etc …
+
+	* Before device tree, all these information use to be set in a huge cluster of board files. And, Information like command line, memory size etc use to be 			passed by bootloaders as part of ATAGS through register R2(ARM). Machine type use to be set separately in register R1(ARM).
+		At this time each kernel compilation use to be for only one specific chip an a specific board.
+
+	* So there was a long pending wish to compile the kernel for all ARM processors, and let the kernel somehow detect its hardware and apply the right 		drivers as needed just like your PC.
+	* But how? On a PC, the initial registers are hardcoded, and the rest of the information is supplied by the BIOS. But ARM processors don’t have a BIOS.
+		The solution chosen was device tree, also referred to as Open Firmware (abbreviated OF) or Flattened Device Tree (FDT). This is essentially a data 			structure in byte code format which contains information that is helpful to the kernel when booting up.
+
+	* The bootloader now loads two binaries: the kernel image and the DTB.
+	* DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not required now.
+
 Rasberrypi
+    * DSI (Display serial interface) is a high-speed serial interface based on a number of (1GBits) data lanes. 
+    	The total voltage swing of the data lines is only 200mV; this makes the electromagnetic noise created and power consumed very low.
+    * https://en.wikipedia.org/wiki/Display_Serial_Interface
+    * https://wolfpaulus.com/journal/embedded/raspberrypi_boot/ (Raspberry pi boot process)
+    * http://www.eizoglobal.com/library/basics/basic_understanding_of_touch_panel/
+    * https://www.quora.com/How-are-mmap-ioremap-and-kmap-different (best for ioremap and mmap differnce)
+    * http://www.xml.com/ldd/chapter/book/ch13.html (DMA, memmory mapping and ioremap)
+    * www.waveshare.com/w/upload/8/8b/7inch-Capacitive-Touch-LCD-UserManual.pdf
     * http://sysprogs.com/VisualKernel/tutorials/raspberry/buildkernel/
     * https://www.raspberrypi.org/documentation/installation/installing-images/linux.md
+    * https://www.raspberrypi.org/documentation/configuration/device-tree.md
     * https://www.raspberrypi.org/downloads/ (Default images)
     * https://github.com/raspberrypi/firmware/wiki/Mailboxes (Mail box)
     * http://elinux.org/RPi_Framebuffer
@@ -24,6 +75,7 @@ Rasberrypi
 	* Read about Phandle
 	* http://mirrors.neusoft.edu.cn/rpi-kernel/drivers/input/touchscreen/rpi-ft5406.c (Default driver for touch screen)
 	* Read touch calibration
+	* http://linuxseekernel.blogspot.in/2014/05/platform-device-driver-practical.html (Convert Platform device module into kernel module)
     
 OS
     * https://www.safaribooksonline.com/library/view/understanding-the-linux/0596005652/ch04.html
@@ -147,3 +199,27 @@ Copy form and to user
         So copy_to_user and copy_from_user provide protection, first it provides protection ensuring the address is a valid user space address and handling the page fault in case of invalid pointer sending EFAULT to user rather than crashing the kernel.
 
     * https://www.quora.com/What-does-insmod-internally-do
+    
+The access_ok function (access_ok( type, addr, size );)
+	* Use the access_ok function to check the validity of the pointer in user space that you intend to access. 
+		The caller provides the pointer, which refers to the start of the data block, the size of the block, and the type of access (whether the area is 			intended to be read or written).
+		The function prototype is defined as: 
+	* The type argument can be specified as VERIFY_READ or VERIFY_WRITE. 
+		The VERIFY_WRITE symbolic also identifies whether the memory region is readable as well as writable. 
+		The function returns non-zero if the region is likely accessible (though access may still result in -EFAULT). 
+		This function simply checks that the address is likely in user space, not in the kernel.
+
+The copy_to_user function (copy_to_user( to, from, n );)
+	* The copy_to_user function copies a block of data from the kernel into user space. 
+		This function accepts a pointer to a user space buffer, a pointer to a kernel buffer, and a length defined in bytes. 
+		The function returns zero on success or non-zero to indicate the number of bytes that weren't transferred.		
+	* After checking the ability to write to the user buffer (through access_ok), the internal function __copy_to_user is invoked, which in turn calls 			__copy_from_user_inatomic (in ./linux/arch/x86/include/asm/uaccess_XX.h, where XX is 32 or 64 depending on architecture). 
+		This function (after determining whether to perform 1, 2 or 4 byte copies) finally calls __copy_to_user_ll, which is where the real work is done. 
+		the page tables could change at any time, requiring a the desired pages to be pinned into memory so that they could not be swapped out while being
+		addressed.
+		
+The copy_from_user function (copy_from_user( to, from, n );)
+	* The copy_from_user function copies a block of data from user space into a kernel buffer. 
+		it accepts a destination buffer (in kernel space), a source buffer (from user space), and a length defined in bytes. 
+		As with copy_to_user, the function returns zero on success and non-zero to indicate a failure to copy some number of bytes.	
+	* The function begins by checking the ability to read from the source buffer in user space (via access_ok), and then calls __copy_from_user and 			eventually __copy_from_user_ll. From here, depending on architecture, a call is made to copy from the user buffer to a kernel buffer with zeroing 			(of unavailable bytes). The optimized assembly functions include the ability to manage.
