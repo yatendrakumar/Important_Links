@@ -35,21 +35,31 @@ Dts and Dtsi difference
 		- SoC definitions go here
 		- These files are included files
 	* dtsi file is just a dts include file. It can be included in multiple dts files.
-	* The linux kernel requires the entire description of the hardware, like which board it is booting(machine type), which all devices it is using there 			addresses(device/bus addresses), there interrupts numbers(irq), mfp pins configuration(pin muxing/gpios) also some board level information like 		memory size, kernel command line etc etc …
+	* The linux kernel requires the entire description of the hardware, like which board it is booting(machine type), which
+		all devices it is using there addresses(device/bus addresses), there interrupts numbers(irq), mfp pins
+		configuration(pin muxing/gpios) also some board level information like memory size, kernel command line etc etc
+		…
 
-	* Before device tree, all these information use to be set in a huge cluster of board files. And, Information like command line, memory size etc use to be 			passed by bootloaders as part of ATAGS through register R2(ARM). Machine type use to be set separately in register R1(ARM).
-		At this time each kernel compilation use to be for only one specific chip an a specific board.
+	* Before device tree, all these information use to be set in a huge cluster of board files. And, Information like
+		command line, memory size etc use to be passed by bootloaders as part of ATAGS through register R2(ARM).
+	Machine type use to be set separately in register R1(ARM). At this time each kernel compilation use to be for only one
+		specific chip an a specific board.
 
-	* So there was a long pending wish to compile the kernel for all ARM processors, and let the kernel somehow detect its hardware and apply the right 		drivers as needed just like your PC.
-	* But how? On a PC, the initial registers are hardcoded, and the rest of the information is supplied by the BIOS. But ARM processors don’t have a BIOS.
-		The solution chosen was device tree, also referred to as Open Firmware (abbreviated OF) or Flattened Device Tree (FDT). This is essentially a data 			structure in byte code format which contains information that is helpful to the kernel when booting up.
-
+	* So there was a long pending wish to compile the kernel for all ARM processors, and let the kernel somehow detect its
+		hardware and apply the right drivers as needed just like your PC.
+	* But how? On a PC, the initial registers are hardcoded, and the rest of the information is supplied by the BIOS. But
+		ARM processors don’t have a BIOS. The solution chosen was device tree, also referred to as Open Firmware
+		(abbreviated OF) or Flattened Device Tree (FDT). This is essentially a data structure in byte code format which
+		contains information that is helpful to the kernel when booting up.
+		
 	* The bootloader now loads two binaries: the kernel image and the DTB.
-	* DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not required now.
+	* DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not
+		required now.
 
 Rasberrypi
     * DSI (Display serial interface) is a high-speed serial interface based on a number of (1GBits) data lanes. 
-    	The total voltage swing of the data lines is only 200mV; this makes the electromagnetic noise created and power consumed very low.
+    	The total voltage swing of the data lines is only 200mV; this makes the electromagnetic noise created and power
+    	consumed very low.
     * https://en.wikipedia.org/wiki/Display_Serial_Interface
     * https://wolfpaulus.com/journal/embedded/raspberrypi_boot/ (Raspberry pi boot process)
     * http://www.eizoglobal.com/library/basics/basic_understanding_of_touch_panel/
@@ -65,13 +75,13 @@ Rasberrypi
     * https://yangqiao.wordpress.com/2015/07/05/rtems-board-support-packages-raspberry-pi-mailbox-and-framebuffer-implementation/
     * http://magicsmoke.co.za/?p=284
     * Screen Rotation
-			#display_rotate=0 Normal
-			display_rotate=1 90 degrees
-			#display_rotate=2 180 degrees
-			#NOTE: You can rotate both the image and touch interface 180º by entering lcd_rotate=2 instead
-			#display_rotate=3 270 degrees
-			#display_rotate=0x10000 horizontal flip
-			#display_rotate=0x20000 vertical flip
+		#display_rotate=0 Normal
+		display_rotate=1 90 degrees
+		#display_rotate=2 180 degrees
+		#NOTE: You can rotate both the image and touch interface 180º by entering lcd_rotate=2 instead
+		#display_rotate=3 270 degrees
+		#display_rotate=0x10000 horizontal flip
+		#display_rotate=0x20000 vertical flip
 	* Read about Phandle
 	* http://mirrors.neusoft.edu.cn/rpi-kernel/drivers/input/touchscreen/rpi-ft5406.c (Default driver for touch screen)
 	* Read touch calibration
@@ -123,9 +133,15 @@ Block Driver:
 	* http://www.makelinux.net/ldd3/chp-16-sect-3
 
 Ram Disk:
-         The problem is that the maximum size of a ramdisk, more specifically of size of memory that can be accessed via the ramdisk driver is configured at compiletime, can be overwritten at boottime, but remains fixed once the kernel is loaded into memory. The default value is probably measured in Megabytes. If I recall correctly the memory for a ramdisk is reserved right when the driver is loaded, all ramdisks are the same size and there is are some 16 ramdisks by default. So not even you want a ramdisk size of 16G :-)
+         The problem is that the maximum size of a ramdisk, more specifically of size of memory that can be accessed via the
+         ramdisk driver is configured at compiletime, can be overwritten at boottime, but remains fixed once the kernel
+         is loaded into memory. The default value is probably measured in Megabytes. If I recall correctly the memory
+         for a ramdisk is reserved right when the driver is loaded, all ramdisks are the same size and there is are some
+         16 ramdisks by default. So not even you want a ramdisk size of 16G :-)
 
-         As stated in the other answer, tmpfs is what you want to use. Further, you won't win a lot by having your entire OS in a ramdisk/tmpfs. Just copy your builddir to a tmpfs and do your compiling then. You may have to ensure that all temporary results are written to a location thats in the tmpfs as well.
+         As stated in the other answer, tmpfs is what you want to use. Further, you won't win a lot by having your entire OS in
+         a ramdisk/tmpfs. Just copy your builddir to a tmpfs and do your compiling then. You may have to ensure that all
+         temporary results are written to a location thats in the tmpfs as well.
 
      * http://lxr.free-electrons.com/source/drivers/block/rd.c?v=2.4.37
      * https://blulin.wordpress.com/2008/11/28/tips-to-create-ramdisk-in-a-linux-system/
@@ -147,8 +163,10 @@ Ram Disk
 
 container_of Macro
     syntax: container_of( pointer, container_type, container_field );
-    This macro takes a pointer to a filed name container_field, within a structure of type container_type, and returns a pointer to the containing structure .
-    simply this is a convenience macro that may be used to obtain a pointer to a structure from a pointer to some other structure contained with in it.
+    This macro takes a pointer to a filed name container_field, within a structure of type container_type, and returns a
+    pointer to the containing structure .
+    simply this is a convenience macro that may be used to obtain a pointer to a structure from a pointer to some other
+    structure contained with in it.
 
 Exception handling in Pipelining
     * http://homepage.cs.uiowa.edu/~ghosh/2-16-06.pdf
@@ -193,16 +211,21 @@ Access Control on a Device File
 
 Copy form and to user
 	* https://www.quora.com/Linux-Kernel/How-does-copy_to_user-work
-    * https://www.quora.com/Why-we-need-copy_from_user-as-the-kernel-can-access-all-the-memory-If-we-see-the-copy_from_user-implementation-again-we-are-copying-data-to-the-kernel-memory-using-memcpy-Doesnt-it-an-extra-overhead
+    	* https://www.quora.com/Why-we-need-copy_from_user-as-the-kernel-can-access-all-the-memory-If-we-see-the-copy_from_user-implementation-again-we-are-copying-data-to-the-kernel-memory-using-memcpy-Doesnt-it-an-extra-overhead
 
-        It is not true, copy_to_user, copy_from_user can in fact refer to adresses which can trigger page fault in kernel mode. If the page fault could not be resolved because it is invalid, it is because the access is regulated via the copy_to_user and copy_from_user, the kernel is able to propagate EFAULT to the user.
-        So copy_to_user and copy_from_user provide protection, first it provides protection ensuring the address is a valid user space address and handling the page fault in case of invalid pointer sending EFAULT to user rather than crashing the kernel.
+        It is not true, copy_to_user, copy_from_user can in fact refer to adresses which can trigger page fault in kernel mode.
+        If the page fault could not be resolved because it is invalid, it is because the access is regulated via the
+        copy_to_user and copy_from_user, the kernel is able to propagate EFAULT to the user.
+        So copy_to_user and copy_from_user provide protection, first it provides protection ensuring the address is a valid
+        user space address and handling the page fault in case of invalid pointer sending EFAULT to user rather than crashing
+        the kernel.
 
     * https://www.quora.com/What-does-insmod-internally-do
     
 The access_ok function (access_ok( type, addr, size );)
 	* Use the access_ok function to check the validity of the pointer in user space that you intend to access. 
-		The caller provides the pointer, which refers to the start of the data block, the size of the block, and the type of access (whether the area is 			intended to be read or written).
+		The caller provides the pointer, which refers to the start of the data block, the size of the block, and the
+		type of access (whether the area is intended to be read or written).
 		The function prototype is defined as: 
 	* The type argument can be specified as VERIFY_READ or VERIFY_WRITE. 
 		The VERIFY_WRITE symbolic also identifies whether the memory region is readable as well as writable. 
@@ -211,15 +234,24 @@ The access_ok function (access_ok( type, addr, size );)
 
 The copy_to_user function (copy_to_user( to, from, n );)
 	* The copy_to_user function copies a block of data from the kernel into user space. 
-		This function accepts a pointer to a user space buffer, a pointer to a kernel buffer, and a length defined in bytes. 
+		This function accepts a pointer to a user space buffer, a pointer to a kernel buffer, and a length defined in
+		bytes. 
 		The function returns zero on success or non-zero to indicate the number of bytes that weren't transferred.		
-	* After checking the ability to write to the user buffer (through access_ok), the internal function __copy_to_user is invoked, which in turn calls 			__copy_from_user_inatomic (in ./linux/arch/x86/include/asm/uaccess_XX.h, where XX is 32 or 64 depending on architecture). 
-		This function (after determining whether to perform 1, 2 or 4 byte copies) finally calls __copy_to_user_ll, which is where the real work is done. 
-		the page tables could change at any time, requiring a the desired pages to be pinned into memory so that they could not be swapped out while being
-		addressed.
+	* After checking the ability to write to the user buffer (through access_ok), the internal function __copy_to_user is
+		invoked, which in turn calls __copy_from_user_inatomic (in ./linux/arch/x86/include/asm/uaccess_XX.h, where XX
+		is 32 or 64 depending on architecture). 
+		This function (after determining whether to perform 1, 2 or 4 byte copies) finally calls __copy_to_user_ll,
+		which is where the real work is done. 
+		the page tables could change at any time, requiring a the desired pages to be pinned into memory so that they
+		could not be swapped out while being addressed.
 		
 The copy_from_user function (copy_from_user( to, from, n );)
 	* The copy_from_user function copies a block of data from user space into a kernel buffer. 
-		it accepts a destination buffer (in kernel space), a source buffer (from user space), and a length defined in bytes. 
-		As with copy_to_user, the function returns zero on success and non-zero to indicate a failure to copy some number of bytes.	
-	* The function begins by checking the ability to read from the source buffer in user space (via access_ok), and then calls __copy_from_user and 			eventually __copy_from_user_ll. From here, depending on architecture, a call is made to copy from the user buffer to a kernel buffer with zeroing 			(of unavailable bytes). The optimized assembly functions include the ability to manage.
+		it accepts a destination buffer (in kernel space), a source buffer (from user space), and a length defined in
+		bytes. 
+		As with copy_to_user, the function returns zero on success and non-zero to indicate a failure to copy some
+		number of bytes.	
+	* The function begins by checking the ability to read from the source buffer in user space (via access_ok), and then
+		calls __copy_from_user and eventually __copy_from_user_ll. From here, depending on architecture, a call is made
+		to copy from the user buffer to a kernel buffer with zeroing (of unavailable bytes). The optimized assembly
+		functions include the ability to manage.
