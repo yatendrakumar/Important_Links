@@ -1,3 +1,6 @@
+Input Subsystem
+	* http://yannik520.github.io/input_dev_framework.html
+
 I2c
 	* https://learn.sparkfun.com/tutorials/i2c/all.pdf (Pdf)
 	* https://learn.sparkfun.com/tutorials/i2c
