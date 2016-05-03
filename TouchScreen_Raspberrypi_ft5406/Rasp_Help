@@ -1,0 +1,40 @@
+- Rasp images
+    1. Noobs
+    2. jessie
+
+- Rasbian-jessie for craeting partition in SD card
+    dd bs=4M if=2016-03-18-raspbian-jessie.img of=/dev/sdd
+
+- After copying Rasp Noobs images in your single partition SD card, plug the memory card into rasp board and run
+
+- Build your own kernel and modules and follow the below procedure
+    1- KERNEL=kernel7
+    2- make bcm2709_defconfig
+    3- make zImage  modules dtbs -j10 
+    4- sudo make  ARCH=arm INSTALL_MOD_PATH=/media/ad6203a1-ec50-4f44-a1c0-e6c3dd4c9202/ modules_install 
+    5- sudo scripts/mkknlimg  arch/arm/boot/zImage /media/boot/kernel7.img
+
+- If not booting
+    sudo cp  arch/arm/boot/dts/*.dtb /media/boot/ 
+    sudo cp  arch/arm/boot/dts/overlays/*.dtb* /media/boot/overlays/ 
+    sudo cp  arch/arm/boot/dts/overlays/README /media/boot/overlays/ 
+
+- To list out your add in Menuconfig
+    - Add modules name in drivers/input/touchscreen/Kconfig
+    config TOUCHSCREEN_YS_RPI_FT5406
+        tristate "Yatendra Raspberry Pi FT5406 driver"
+        depends on RASPBERRYPI_FIRMWARE
+        help
+          Say Y here to enable the Raspberry Pi memory based FT5406 device
+
+    config TOUCHSCREEN_YS_RPI_FT5406_MODULE
+        tristate "Yatendra Raspberry Pi FT5406 driver As Module"
+        depends on RASPBERRYPI_FIRMWARE
+        help
+          Say Y here to enable the Raspberry Pi memory based FT5406 device
+
+    - Add modules name in drivers/input/touchscreen/Makefile
+    obj-$(CONFIG_TOUCHSCREEN_YS_RPI_FT5406)	+= ys_rpi-ft5406.o
+    obj-$(CONFIG_TOUCHSCREEN_YS_RPI_FT5406_MODULE)	+= ys_rpi-ft5406_module.o
+
+- Use modprobe to insert module
