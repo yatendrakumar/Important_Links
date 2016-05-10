@@ -1,3 +1,84 @@
+TFTP server setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* Trivial File Transfer Protocol (TFTP) is an Internet software utility for transferring files 
+	that is simpler to use than the File Transfer Protocol (FTP) but less capable. 
+	* It is used where user authentication and directory visibility are not required.
+	TFTP uses the User Datagram Protocol (UDP) rather than the Transmission Control Protocol (TCP). 
+	TFTP is described formally in Request for Comments (RFC) 1350.
+	* If your machine is connected to a local area network, you may be able to boot it over the network 
+	from another machine, using TFTP. If you intend to boot the installation system from another machine, 
+	the boot files will need to be placed in specific locations on that machine, 
+	and the machine configured to support booting of your specific machine.
+	* Install following packages.
+		apt-get install tftpd-hpa tftp-hpa
+		sudo apt-get install xinetd tftpd tftp
+		sudo apt-get install tftpd-hpa
+		sudo apt-get install openbsd-inetd
+	* vim /etc/inetd.conf
+		tftp dgram udp wait root /usr/sbin/in.tftpd /usr/sbin/in.tftpd -s /var/lib/tftpboot
+    (or)
+	* sudo vim /etc/default/tftpd-hpa
+		RUN_DAEMON=”yes”
+	* Restart deamons
+		sudo /etc/init.d/openbsd-inetd restart
+		sudo /etc/init.d/tftpd-hpa restart
+	* Now in some other system follow the following steps
+		tftp 172.16.9.59 (dest IP address)
+		tftp> get test
+		tftp> quit
+		cat test	
+	* TFTP Server Install and Setup
+		Create /etc/xinetd.d/tftp and put this entry
+		service tftp
+		{
+		protocol        = udp
+		port            = 69
+		socket_type     = dgram
+		wait            = yes
+		user            = nobody
+		server          = /usr/sbin/in.tftpd
+		server_args     = /tftpboot
+		disable         = no
+		}
+		Create a folder /tftpboot this should match whatever you gave in server_args. mostly it will be tftpboot
+		sudo mkdir /tftpboot
+		sudo chmod -R 0777 /tftpboot
+		sudo chown -R nobody /tftpboot
+	* Restart the xinetd service.
+		newer systems:
+			sudo service xinetd restart
+			older systems:
+			sudo /etc/init.d/xinetd restart
+			Now our tftp server is up and running.	
+
+TFTP Boot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* After TFTP Setup run below commands to run uImage (Beagle Bone Black)
+		setenv netmask 255.255.255.0;
+		setenv gatewayip 172.16.9.1;
+		setenv serverip 172.16.9.58;
+		setenv ipaddr 172.16.9.19;
+		setenv bootcmd 'tftp 0x81000000  uImage; tftp 0x88000000 am335x-boneblack.dtb; bootm 0x81000000'
+		boot
+
+H/W Interrupt handle using PIC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://www.brokenthorn.com/Resources/OSDevPic.html
+	* http://iakovlev.org/index.html?p=945&m=1
+
+Linux important topics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://linuxeco.com/
+
+Operating System tutorial
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/
+
+Kernel docs for api and structures
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* https://www.kernel.org/doc/htmldocs/ (all)
+	* Linux manual pages for functions - https://manned.org/browse/arch/linux-manpages/3.14-1
+
 Platform devices
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* Platform devices are devices that typically appear as autonomous (having the freedom to act independently)
@@ -43,6 +124,23 @@ Error (DEVICE_ATTR(-error: negative width in bit-field)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* the kernel devs don't like write permissions on devices for "others"
 		Therefore all DEVICE_ATTR( calls could have 0660 instead of 0666 permitions.
+		
+Error (fatal error: sys/types.h: No such file or directory)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* apt-file find /usr/include/sys/types.h
+		Output: libc6-dev-i386: /usr/include/sys/types.h
+	libc6-dev-i386 is the package I seemingly need to install
+	* Cross verify that you are compiling as a module or normal c program using gcc
+	gcc file_name.c will not give error
+
+Error (function declaration isn’t a prototype)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* In C int foo() and int foo(void) are different functions. 
+	int foo() accepts an arbitrary number of arguments, while int foo(void) accepts 0 arguments.
+	
+Errro (Undefined reference to `pow' and `floor')
+	* gcc file_name.c -lm
+	This will tell gcc to link your code against the math lib. Just be sure to put the flag after the objects you want to link. 
 
 Vitual box open error (This problem came when new kernel version is compiled)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,13 +177,17 @@ module_param
 
 Input Subsystem														
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	* http://yannik520.github.io/input_dev_framework.html
-	(Create sysfs class entry using Kobj)
-	* https://geekwentfreak-raviteja.rhcloud.com/blog/2010/06/28/create-files-in-sysfs-sysfs_create_group/ 
+	* http://yannik520.github.io/input_dev_framework.html (Create sysfs class entry using Kobj)
+	* https://geekwentfreak-raviteja.rhcloud.com/blog/2010/06/28/create-files-in-sysfs-sysfs_create_group/
 	* https://www.kernel.org/doc/Documentation/driver-model/device.txt
 	* Read Documentation/kobject.txt																																																																																																																																																																																																																																																																																																																																																																																																																																														
 	* http://thiemonge.org/getting-started-with-uinput
 	* http://www.makelinux.net/books/lkd2/ch06lev1sec3 (Registering interruput handler)
+	* Read Documents on input layers docs from linux source input.txt, input-programming.txt
+	* http://www4.cs.fau.de/~thoenig/thesis/thesis.pdf (Input Abstraction Layer) check out input core topic
+	* Concept used in input mouse driver to continously report events with out sysfs enteries access
+		Workqueue : http://www.makelinux.net/ldd3/chp-7-sect-6	
+		Kernel Timer : http://www.makelinux.net/ldd3/chp-7-sect-4 
 	
 Exported Symbols
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,6 +271,27 @@ Dts and Dtsi difference
 
 Rasberrypi
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    * Compile kernel 
+		# Set env 
+			KERNEL=kernel7
+		# Default config file
+			make bcm2709_defconfig
+		# compile with Cross compiler set
+			make zImage  modules dtbs -j10 
+		# Install module directly onto rootfs directory (ad6203a1-ec50-4f44-a1c0-e6c3dd4c9202 is just partition name)
+			sudo make  ARCH=arm INSTALL_MOD_PATH=/media/ad6203a1-ec50-4f44-a1c0-e6c3dd4c9202/ modules_install
+		# Copy kernel image
+			sudo scripts/mkknlimg  arch/arm/boot/zImage /media/boot/kernel7.img
+		#Copy device tree files
+			sudo cp  arch/arm/boot/dts/*.dtb /media/boot/ 
+			sudo cp  arch/arm/boot/dts/overlays/*.dtb* /media/boot/overlays/ 
+			sudo cp  arch/arm/boot/dts/overlays/README /media/boot/overlays/ 
+		# Deal with available source 
+			rasbian-jessie for craeting partition in SD card
+				dd bs=4M if=2016-03-18-raspbian-jessie.img of=/dev/sdd
+			Or Work with noobs
+				Create single partition and copy noobs source into that and plug into Rasp board MMC slot
+
     * DSI (Display serial interface) is a high-speed serial interface based on a number of (1GBits) data lanes. 
     	The total voltage swing of the data lines is only 200mV; this makes the electromagnetic noise created and power
     	consumed very low.
@@ -183,6 +306,7 @@ Rasberrypi
     * https://www.raspberrypi.org/documentation/configuration/device-tree.md
     * https://www.raspberrypi.org/downloads/ (Default images)
     * https://github.com/raspberrypi/firmware/wiki/Mailboxes (Mail box)
+    * https://github.com/raspberrypi/firmware/wiki/Accessing-mailboxes (Addresses as data: Read to understand how Video core communicates with ARM using firmware tags)
     * http://elinux.org/RPi_Framebuffer
     * https://yangqiao.wordpress.com/2015/07/05/rtems-board-support-packages-raspberry-pi-mailbox-and-framebuffer-implementation/
     * http://magicsmoke.co.za/?p=284

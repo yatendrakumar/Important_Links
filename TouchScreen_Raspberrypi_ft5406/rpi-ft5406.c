@@ -217,6 +217,8 @@ static int ft5406_probe(struct platform_device *pdev)
      * of_node_put() on it when done.
      * struct device_node *of_parse_phandle(const struct device_node *np,
                          const char *phandle_name, int index)
+     * @of_node: Associated device tree node                   
+     * @fw_node: Associated device node supplied by platform firmware
      */
 	fw_node = of_parse_phandle(pdev->dev.of_node, "firmware", 0);
 	if (!fw_node) {
