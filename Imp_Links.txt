@@ -1,3 +1,23 @@
+Beagle bone black compilation steps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://elinux.org/Building_BBB_Kernel
+	For latest kernel Device tree is important so try to compile uImage with same
+	Try transferring the image to the BBB via TFTP
+	* https://linuxlink.timesys.com/docs/gsg/beaglebone_black
+
+Disable tty terminal console 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* file /etc/inittab 
+	Comment line : ttyDefault::respawn:-/bin/sh
+	
+Minicom junk character issue
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* Check the settings if all Ok please change the UART cable
+
+DMA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://www.makelinux.net/ldd3/chp-15-sect-4
+	
 TFTP server setup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* Trivial File Transfer Protocol (TFTP) is an Internet software utility for transferring files 
@@ -50,25 +70,48 @@ TFTP server setup
 			older systems:
 			sudo /etc/init.d/xinetd restart
 			Now our tftp server is up and running.	
-
+	* https://rechtzeit.wordpress.com/2013/01/16/tftp-boot-using-u-boot/
+	
+	
 TFTP Boot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	* After TFTP Setup run below commands to run uImage (Beagle Bone Black)
+	* uboot tftp
+	After TFTP Setup run below commands to run uImage (Beagle Bone Black)
 		setenv netmask 255.255.255.0;
 		setenv gatewayip 172.16.9.1;
 		setenv serverip 172.16.9.58;
 		setenv ipaddr 172.16.9.19;
-		setenv bootcmd 'tftp 0x81000000  uImage; tftp 0x88000000 am335x-boneblack.dtb; bootm 0x81000000'
+		Set if used uImage without Device tree
+			setenv bootcmd 'tftp 0x81000000  uImage; tftp 0x88000000 am335x-boneblack.dtb; bootm 0x81000000'
+		Set if used uImage with Device tree		
+			setenv bootcmd 'tftp 0x80200000 uImage-BBB; bootm 0x80200000'
+			setenv bootargs console=ttyO0,115200n8 quiet root=/dev/mmcblk0p2 ro rootfstype=ext4 rootwait 
 		boot
+	* After kernel is up
+		ifconfig eth0 172.16.9.19 up;
+		tftp -g -r test 172.16.9.58
 
 H/W Interrupt handle using PIC
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://www.brokenthorn.com/Resources/OSDevPic.html
 	* http://iakovlev.org/index.html?p=945&m=1
+	* https://www.safaribooksonline.com/library/view/understanding-the-linux/0596002130/ch04s02.html
+	* http://www.oreilly.com/openbook/linuxdrive3/book/ch10.pdf
+	* http://www.scs.carleton.ca/sivarama/org_book/org_book_web/slides/chap_1_versions/ch20_1.pdf
 
 Linux important topics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://linuxeco.com/
+	
+Cross platform kernel panic due to init (Rootfs not found or nor able to mount the sdcard)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* Try adding in .config file 
+		CONFIG_CMDLINE="root=/dev/mmcblk0p2 rootwait console=ttyO0,115200"
+	* Copy the rootfs in proper formated and partitioned sdcard
+
+8051: programming-external-hardware-interrupts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://what-when-how.com/8051-microcontroller/programming-external-hardware-interrupts/
 
 Operating System tutorial
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,14 +223,16 @@ Input Subsystem
 	* http://yannik520.github.io/input_dev_framework.html (Create sysfs class entry using Kobj)
 	* https://geekwentfreak-raviteja.rhcloud.com/blog/2010/06/28/create-files-in-sysfs-sysfs_create_group/
 	* https://www.kernel.org/doc/Documentation/driver-model/device.txt
-	* Read Documentation/kobject.txt																																																																																																																																																																																																																																																																																																																																																																																																																																														
+	* Read Documentation/kobject.txt	
+		* http://lxr.free-electrons.com/source/samples/kobject/kobject-example.c
+		* http://lxr.free-electrons.com/source/samples/kobject/kset-example.c
 	* http://thiemonge.org/getting-started-with-uinput
 	* http://www.makelinux.net/books/lkd2/ch06lev1sec3 (Registering interruput handler)
 	* Read Documents on input layers docs from linux source input.txt, input-programming.txt
 	* http://www4.cs.fau.de/~thoenig/thesis/thesis.pdf (Input Abstraction Layer) check out input core topic
 	* Concept used in input mouse driver to continously report events with out sysfs enteries access
 		Workqueue : http://www.makelinux.net/ldd3/chp-7-sect-6	
-		Kernel Timer : http://www.makelinux.net/ldd3/chp-7-sect-4 
+		Kernel Timer : http://www.makelinux.net/ldd3/chp-7-sect-4
 	
 Exported Symbols
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -212,6 +257,7 @@ I2c
 	* docs.lpcware.com/lpc800um/RegisterMaps/i2c/r-Register-description.html
 	* http://www.nxp.com/documents/application_note/AN10148.pdf
 	* http://www.slideshare.net/itembedded/raspberry-pi-linux-i2c-driver
+	* http://stackoverflow.com/questions/33549211/how-to-add-i2c-devices-on-the-beaglebone-black-using-device-tree-overlays
 
 Virtual box
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -268,6 +314,14 @@ Dts and Dtsi difference
 	* The bootloader now loads two binaries: the kernel image and the DTB.
 	* DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not
 		required now.
+
+Device tree links
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://elinux.org/Device_Tree
+	* http://elinux.org/Device_Tree_Usage
+	* https://github.com/raspberrypi/documentation/blob/master/configuration/device-tree.md
+	* http://free-electrons.com/pub/conferences/2014/elc/petazzoni-device-tree-dummies/petazzoni-device-tree-dummies.pdf
+	* https://cdn-learn.adafruit.com/downloads/pdf/introduction-to-the-beaglebone-black-device-tree.pdf
 
 Rasberrypi
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
