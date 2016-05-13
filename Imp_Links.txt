@@ -246,6 +246,7 @@ Blogspot for Kernel terms
 
 I2c
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://www.oocities.org/marco_corvi/games/lkpe/i2c/i2c.htm 
 	* https://learn.sparkfun.com/tutorials/i2c/all.pdf (Pdf)
 	* https://learn.sparkfun.com/tutorials/i2c
 	* http://www.slideshare.net/varunmahajan06/i2c-subsystem-in-linux2624
