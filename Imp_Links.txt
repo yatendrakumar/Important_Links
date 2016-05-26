@@ -1,3 +1,34 @@
+Deadlock, Livelock and Starvation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://stackoverflow.com/questions/6155951/whats-the-difference-between-deadlock-and-livelock
+	* http://www.studytonight.com/operating-system/deadlocks
+	
+Volatile keyword
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://www.barrgroup.com/Embedded-Systems/How-To/C-Volatile-Keyword
+	
+Mutex and Semaphore
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://www.geeksforgeeks.org/mutex-vs-semaphore/
+	* https://www.quora.com/What-is-the-difference-between-a-mutex-and-a-semaphore
+
+torvalds drivers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* https://github.com/torvalds/linux/tree/master/drivers
+
+Macros
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* MODULE_DEVICE_TABLE is used to generate map files by depmod program;
+		MODULE_DEVICE_TABLE(of, omap_mcspi_of_match);
+		Process:
+		1. Driver for each device exposes its information using the API MODULE_DEVICE_TABLE. Each device has a unique vendor Id and device Id.
+		2. At compilation time, the build process extracts this information out of the driver and builds a table.
+		3. When the device is plugged in, the kernel checks this device table to see if any driver is available for the particular Vendor/Device Id. 
+			If yes then it loads that driver and initializes the device.
+	* module_i2c_driver — Helper macro for registering a modular I2C driver
+		Helper macro for I2C drivers which do not do anything special in module init/exit. 
+		Each module may only use this macro once, and calling it replaces module_init and module_exit
+
 Beagle bone black compilation steps
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://elinux.org/Building_BBB_Kernel
@@ -115,6 +146,8 @@ Cross platform kernel panic due to init (Rootfs not found or nor able to mount t
 
 Operating System tutorial
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* Conceptual Architecture of the Linux Kernel
+		http://repo.hackerzvoice.net/depot_madchat/ebooks/Linux/Calk/
 	* https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/
 
 Kernel docs for api and structures
@@ -259,6 +292,26 @@ I2c
 	* http://www.nxp.com/documents/application_note/AN10148.pdf
 	* http://www.slideshare.net/itembedded/raspberry-pi-linux-i2c-driver
 	* http://stackoverflow.com/questions/33549211/how-to-add-i2c-devices-on-the-beaglebone-black-using-device-tree-overlays
+	* https://developer.mbed.org/users/okano/notebook/i2c-access-examples/
+	* of_get_property from DTS
+		http://xillybus.com/tutorials/device-tree-zynq-5
+	* http://elinux.org/EBC_Exercise_12_I2C
+	* By default OMAP driver support (http://patchwork.ozlabs.org/patch/337812/)
+		I2c core supports defualt probing functionality for devices not registered through dt/board files. 
+		If there are any client driver registered, i2c core will try to check if there is any device present 
+		corresponding to the address supplied by the client driver. 
+		If the device is actually present and not registered, core will register it, 
+		else the device default probe will fail and we get a omap i2c controller specific timeout messages.
+		add lines in common.dts file
+		my_eeprom: my_eeprom@50 {
+			compatible = "at,my_eeprom"; // Driver name
+			reg  = <0x50>;
+		};
+		dtsi will show you the soc and ocp components, check i2c node data, you will get the Controller name 
+		(In Beagle bone black 3.8 kernel OMAP I2C controller listed out)
+	* BeagleBone Black I2C Problem (Error: Could not set address to 0x50: Device or resource busy)
+		https://www.mail-archive.com/beagleboard@googlegroups.com/msg20931.html
+	* http://www.robot-electronics.co.uk/i2c-tutorial (Read and write msg format)
 
 Virtual box
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -323,6 +376,8 @@ Device tree links
 	* https://github.com/raspberrypi/documentation/blob/master/configuration/device-tree.md
 	* http://free-electrons.com/pub/conferences/2014/elc/petazzoni-device-tree-dummies/petazzoni-device-tree-dummies.pdf
 	* https://cdn-learn.adafruit.com/downloads/pdf/introduction-to-the-beaglebone-black-device-tree.pdf
+	* On-Chip Protocol (OCP) 
+		http://www.ijser.org/paper/IMPLEMENTATION-OF-OCP-FOR-THE-ON-CHIP-BUS.html
 
 Rasberrypi
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -465,7 +520,8 @@ Ram Disk
 
 Container_of Macro
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    syntax: container_of( pointer, container_type, container_field );
+    * http://radek.io/2012/11/10/magical-container_of-macro/
+    * syntax: container_of( pointer, container_type, container_field );
     This macro takes a pointer to a filed name container_field, within a structure of type container_type, and returns a
     pointer to the containing structure .
     simply this is a convenience macro that may be used to obtain a pointer to a structure from a pointer to some other
