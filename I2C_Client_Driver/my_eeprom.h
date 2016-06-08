@@ -21,7 +21,7 @@
 #include<linux/err.h>
 
 const struct i2c_device_id eeprom_ids[] = {
-    {"my_eeprom", 0},
+//    {"my_eeprom", 0},
     {"my_eeprom", 2},
     {}
 };
@@ -30,10 +30,10 @@ int eeprom_probe(struct i2c_client *client, const struct i2c_device_id *id);
 int eeprom_remove(struct i2c_client *client);
 int eeprom_open(struct inode *inode, struct file *filep);
 int eeprom_release(struct inode *in, struct file *fp);
-int eeprom_read(struct i2c_client *client, unsigned char reg, 
-        unsigned char *buffer);
-int eeprom_write(struct i2c_client *client, unsigned char reg, 
-        unsigned char *buffer);
+int eeprom_read(struct i2c_client *client, const char __user *buffer, size_t
+count);
+int eeprom_write(struct i2c_client *client, const char __user *buffer, size_t
+count);
 
 //void eeprom_exit(void);
 

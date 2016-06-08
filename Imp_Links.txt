@@ -1,3 +1,7 @@
+Debugging System Faults
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://www.makelinux.net/ldd3/chp-4-sect-5
+
 Deadlock, Livelock and Starvation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://stackoverflow.com/questions/6155951/whats-the-difference-between-deadlock-and-livelock
@@ -28,6 +32,15 @@ Macros
 	* module_i2c_driver — Helper macro for registering a modular I2C driver
 		Helper macro for I2C drivers which do not do anything special in module init/exit. 
 		Each module may only use this macro once, and calling it replaces module_init and module_exit
+	* module_init and subsys_initcall while initializing the driver?
+		The difference relates to timing, or more precisely, order of execution. 
+		That is, the procedure declared as subsys_initcall is guaranteed to be executed before the procedure declared as module_init. 
+		This ordering ensures that subsystem and platform drivers are initialized before device drivers try to utilize 
+		the former's functionality (e.g. a device driver registers as a subsystem device).
+		The actual macro definition for each depends on if the kernel is configured for (loadable) modules or not. 
+		The definition for these macros (and other init macros) can be found in include/linux/init.h. 
+		Note that subsys_initcall() can only be used by a built-in (statically linked) module. 
+			module_init can be used by either built-in or loadable modules
 
 Beagle bone black compilation steps
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,7 +116,6 @@ TFTP server setup
 			Now our tftp server is up and running.	
 	* https://rechtzeit.wordpress.com/2013/01/16/tftp-boot-using-u-boot/
 	
-	
 TFTP Boot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* uboot tftp
@@ -122,13 +134,15 @@ TFTP Boot
 		ifconfig eth0 172.16.9.19 up;
 		tftp -g -r test 172.16.9.58
 
-H/W Interrupt handle using PIC
+Interrupt handle
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://www.brokenthorn.com/Resources/OSDevPic.html
 	* http://iakovlev.org/index.html?p=945&m=1
 	* https://www.safaribooksonline.com/library/view/understanding-the-linux/0596002130/ch04s02.html
 	* http://www.oreilly.com/openbook/linuxdrive3/book/ch10.pdf
 	* http://www.scs.carleton.ca/sivarama/org_book/org_book_web/slides/chap_1_versions/ch20_1.pdf
+	* http://embien.com/blog/interrupt-handling-in-embedded-software/
+	* https://www.safaribooksonline.com/library/view/understanding-the-linux/0596005652/ch04s06.html
 
 Linux important topics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -312,7 +326,23 @@ I2c
 	* BeagleBone Black I2C Problem (Error: Could not set address to 0x50: Device or resource busy)
 		https://www.mail-archive.com/beagleboard@googlegroups.com/msg20931.html
 	* http://www.robot-electronics.co.uk/i2c-tutorial (Read and write msg format)
-
+	* http://www.programering.com/a/MzM5AjMwATc.html (Omap I2C controller)
+	* https://lkml.org/lkml/2016/5/25/322 (omap_i2c driver to register a controller as a slave device 
+		and be deriven by an external/internal master)
+	* https://patchwork.ozlabs.org/patch/411084/ (i2c: omap: fix "Too much work in one IRQ" irq handling)
+	* http://www.makelinux.net/ti/docs/OMAP4430/doc-4290 (I2C Registers)
+		Can bo back to doc-4250 for the index of serial communication else start with atleast doc-4286
+		Or can refer to http://focus.ti.com/pdfs/wtbu/OMAP4430_ES2.0_Public_TRM_vJ.pdf (4041 page)
+	* http://ww1.microchip.com/downloads/en/DeviceDoc/61116E.pdf
+	* Read i2c_new_dummy Api 
+		http://stackoverflow.com/questions/15718783/what-does-a-i2c-new-dummy-do
+		This returns an I2C client bound to the "dummy" driver, intended for use with devices that consume multiple addresses.
+		Examples of such chips include various EEPROMS (like 24c04 and 24c08 models).
+	* http://www.gossamer-threads.com/lists/linux/kernel/1720202 (drivers/misc: at24: convert to use devm_kzalloc)
+	* https://lists.ozlabs.org/pipermail/linuxppc-dev/2008-January/050254.html (i2c: Kill the old driver matching scheme)
+	* http://permalink.gmane.org/gmane.linux.drivers.i2c/18187 (platform_data in i2c device drivers)
+	* https://datko.net/2013/11/03/bbb_i2c/ (BeagleBone Black I2C References)
+		
 Virtual box
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* Virtual box screen size problem

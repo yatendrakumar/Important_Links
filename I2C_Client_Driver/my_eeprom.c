@@ -36,13 +36,25 @@ int eeprom_probe(struct i2c_client *client,
     return 0;
 }
 
-int eeprom_write(struct i2c_client *client, unsigned char reg, 
-        unsigned char *buffer)
+int eeprom_write(struct i2c_client *client, const char __user *buffer, size_t
+count)
 {
-    char buffer_write[20];
-    buffer_write[0] = 0x50;
-
-    strcpy(&buffer_write[1], "Yatendra");
+    char buffer_write[count];
+    buffer_write[0] = 0x10;
+    int addr = 0;
+//    printk(KERN_INFO "buffer = %s\n", buffer);
+//    buffer_write[0] = *buffer;
+//    buffer_write[0] = ((int)*buffer)*10 & 0xff;
+    printk(KERN_INFO "address = %x\n", buffer_write[0]);
+    printk(KERN_INFO "buffer = %s\n", buffer);
+    printk(KERN_INFO "count = %d\n", count);
+//    printk(KERN_INFO "size = %s\n", sizeof(buffer));
+//    buffer_write[1] = buffer;
+//    if (copy_from_user(&buffer_write[1], buffer , sizeof(buffer)) != 0){
+//        printk(KERN_INFO "Error\n");
+//        return -EFAULT;
+//    }
+    printk(KERN_INFO "msg = %s\n", buffer);
     int ret = 0;
     struct i2c_msg msg[] = {
         {
@@ -62,11 +74,11 @@ int eeprom_write(struct i2c_client *client, unsigned char reg,
     return ret;
 }
 
-int eeprom_read(struct i2c_client *client, unsigned char reg, 
-        unsigned char *buffer)
+int eeprom_read(struct i2c_client *client, const char __user *buffer, size_t
+count)
 {
     char buffer_read[20];
-    reg = 0x50;
+    char reg = 0x50;
     int ret = 0;
     struct i2c_msg msg[] = {
         {
