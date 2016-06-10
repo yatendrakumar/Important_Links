@@ -1,3 +1,24 @@
+Warning: 
+	Links can be changed or destroyed by the owner or due to some other issues. Please don't blame me.
+
+kmalloc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* kmalloc() – It is similar to the malloc() in the user space. 
+	However, the kmalloc will allocate the number of bytes from the kernel space. 
+	The region of memory allocated is physically contiguous. Here is the API.
+		#include <linux/slab.h>
+		#include <linux/gfp.h>
+		void * kmalloc(size_t size, int flags);
+		The flags are defined in the <linux/gfp.h>.
+			1. GFP_KERNEL – Here, the process can sleep if the memory is not available. 
+			The kernel will try to free up some memory in order to make this call successful. 
+			Thus, the call may sleep here. It is not suitable in tasklets, interrupt, etc.
+			2. GFP_ATOMIC – This can be used while allocating the memory in the interrupt service routine. This will never sleep.
+			3. GFP_USER – To allocate memory for the user space pages, it may sleep.
+			4. GFP_HIGHUSER – For high memory allocation for the user space.
+		Once the kernel malloc is allocated, the memory can be freed up using the following API.
+			void kfree(const void *ptr);
+
 Debugging System Faults
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://www.makelinux.net/ldd3/chp-4-sect-5
@@ -278,7 +299,8 @@ Input Subsystem
 	* Read Documents on input layers docs from linux source input.txt, input-programming.txt
 	* http://www4.cs.fau.de/~thoenig/thesis/thesis.pdf (Input Abstraction Layer) check out input core topic
 	* Concept used in input mouse driver to continously report events with out sysfs enteries access
-		Workqueue : http://www.makelinux.net/ldd3/chp-7-sect-6	
+		Workqueue : http://www.makelinux.net/ldd3/chp-7-sect-6
+			http://www.tune2wizard.com/kernel-programming-workqueue/
 		Kernel Timer : http://www.makelinux.net/ldd3/chp-7-sect-4
 	
 Exported Symbols
@@ -492,7 +514,7 @@ IO Systems
 
 Block Driver
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	High memory access-
+	* High memory access-
 		* https://www.kernel.org/doc/Documentation/vm/highmem.txt
 	* http://yannik520.github.io/blkdevarch.html
 	* https://www.cs.rutgers.edu/~pxk/416/notes/11-devices.html
@@ -585,7 +607,7 @@ Linux Kernel & Device Driver Programming
 Device model (Chapter 14 ldd)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     * http://www.landley.net/kdocs/ols/2002/ols2002-pages-368-375.pdf
-    /include/linux/device.h file to check
+    * /include/linux/device.h file to check
 
 Driver Model (Chapter 14 ldd)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
