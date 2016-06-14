@@ -1,6 +1,11 @@
 Warning: 
 	Links can be changed or destroyed by the owner or due to some other issues. Please don't blame me.
 
+IPC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://www.rapidprogramming.com/questions-answers/message-queues-and-shared-memory-differencesmq-vs-shared-memory-1569
+	* http://www.ece.eng.wayne.edu/~gchen/ece5650/lecture5.pdf
+
 kmalloc
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* kmalloc() – It is similar to the malloc() in the user space. 
@@ -32,10 +37,11 @@ Volatile keyword
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://www.barrgroup.com/Embedded-Systems/How-To/C-Volatile-Keyword
 	
-Mutex and Semaphore
+Mutex, Semaphore, spinlock
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://www.geeksforgeeks.org/mutex-vs-semaphore/
 	* https://www.quora.com/What-is-the-difference-between-a-mutex-and-a-semaphore
+	* http://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instead-of-mutex?lq=1
 
 torvalds drivers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -164,6 +170,7 @@ Interrupt handle
 	* http://www.scs.carleton.ca/sivarama/org_book/org_book_web/slides/chap_1_versions/ch20_1.pdf
 	* http://embien.com/blog/interrupt-handling-in-embedded-software/
 	* https://www.safaribooksonline.com/library/view/understanding-the-linux/0596005652/ch04s06.html
+	* https://0xax.gitbooks.io/linux-insides/content/interrupts/interrupts-9.html
 
 Linux important topics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -192,6 +199,7 @@ Kernel docs for api and structures
 
 Platform devices
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* http://tutorialsdaddy.com/tutorials/Platform_Drivers_and_Devices_registration_857.php?course=Linux+Platform+Devices+and+Drivers
 	* Platform devices are devices that typically appear as autonomous (having the freedom to act independently)
 	entities in the system. This includes legacy port-based devices and	host bridges to peripheral buses, and 
 	most controllers integrated into system-on-chip platforms.
@@ -390,6 +398,13 @@ Adding A New System Service To Android
 
 Dts and Dtsi difference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* The idea behind device tree is quite simple. It describes a machine hardware configuration.
+		When the kernel starts, it needs to initialize the drivers for the devices on the board. 
+		But often on embedded systems, devices can't be discover at running time.
+		In this case, the Linux kernel has a c file that initialize the devices for the board.
+		So the kernel must be modified/compiled for each board.
+		Another way is to provide a small file that describe the board to the Linux kernel. 
+		When the kernel start, it reads this file (called dtb for Device Tree Binary) to know the devices on the board, and initialize usefull drivers. 
 	* .dts files :
 		- All Board-level definitions go here
 		- These files are final Device Tree
@@ -500,6 +515,7 @@ Beagle bone black (BBB) Link
     * http://www.slimlogic.co.uk/2011/05/omap3-sd-booting/ (Flashing image script)
     * http://elinux.org/BeagleBoardBeginners
     * https://blackfin.uclinux.org/doku.php?id=bootloaders:u-boot:testing
+    * https://github.com/beagleboard/linux/releases (Kernels releases)
 
 Ram
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,44 @@
+Interrupts may have different important characteristics and there are two among them:
+    * Handler of an interrupt must execute quickly;
+    * Sometime an interrupt handler must do a large amount of work.
+
+As you can understand, it is almost impossible to make so that both characteristics were valid. Because of these, previously the handling of interrupts was split into two parts:
+    * Top half;
+    * Bottom half;
+
+Once the Linux kernel was one of the ways the organization postprocessing, and which was called: the bottom half of the processor, but now it is already not actual. Now this term has remained as a common noun referring to all the different ways of organizing deferred processing of an interrupt.
+
+The deferred processing of an interrupt suggests that some of the actions for an interrupt may be postponed to a later execution when the system will be less loaded. As you can suggests, an interrupt handler can do large amount of work that is impermissible as it executes in the context where interrupts are disabled. That's why processing of an interrupt can be split on two different parts. In the first part, the main handler of an interrupt does only minimal and the most important job. After this it schedules the second part and finishes its work. When the system is less busy and context of the processor allows to handle interrupts, the second part starts its work and finishes to process remaining part of a deferred interrupt.
+
+There are three types of deferred interrupts in the Linux kernel:
+    * softirqs;
+    * tasklets;
+    * workqueues;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The key differences between softirq (Interrupt context) and tasklet (Interrupt context) are:
+
+Allocation:
+
+    * Softirqs are statically allocated at compile-time. Unlike tasklets, you cannot dynamically register and destroy softirqs.
+    * Tasklets can be statically allocated using DECLARE_TASKLET(name, func, data) or can also be allocated dynamically and initialized at runtime using tasklet_init(name, func, data)
+
+Concurrency:
+
+    * Softirqs can run concurrently on several CPUs, even if they are of the same type because softirqs are reentrant functions and must explicitly protect their data structures with spinlocks.
+    * Tasklets are non-reentrant and tasklets of the same type are always serialized: in other words, the same type of tasklet cannot be executed by two CPUs at the same time. However, tasklets of different types can be executed concurrently on several CPUs.
+
+Processing:
+
+    * Softirqs are activated by means of the raise_softirq(). The pending softirqs are processed by do_softirq() and ksoftirqd kernel thread after being enabled by local_bh_enable() or by spin_unlock_bh()
+    * Tasklets are a bottom-half mechanism built on top of softirqs i.e. tasklets are represented by two softirqs: HI_SOFTIRQ and TASKLET_SOFTIRQ. Tasklets are actually run from a softirq. The only real difference in these types is that the HI_SOFTIRQ based tasklets run prior to the TASKLET_SOFTIRQ tasklets. So, tasklet_schedule() basically calls raise_softirq(TASKLET_SOFTIRQ)
+
+Note: 
+	that softirqs (and hence tasklets and timers) are run on return from hardware interrupts, or on return from a system call. Also as soon as the thread that raised the softirq ends, that single softirq (and on other) is run to minimize softirq latency.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Workqueue (kernel/process context) :
+  
+	* The workqueue is another concept for handling deferred functions. It is similar to tasklets with some differences. Workqueue functions run in the context of a kernel process, but tasklet functions run in the software interrupt context. This means that workqueue functions must not be atomic as tasklet functions. Tasklets always run on the processor from which they were originally submitted. Workqueues work in the same way, but only by default. 
+	* The work queue subsystem is an interface for creating kernel threads to handle work that is queued from elsewhere. All of these kernel threads are called -- worker threads.
+
