@@ -543,12 +543,15 @@ Ram Disk
     * https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt
     * http://yattutime.blogspot.in/2014/02/linux-boot-process.html
     Table: Comparison of ramfs and tmpfs Experimentation    Tmpfs   Ramfs
-    |       Experimentation                      |      Tmpfs           |       Ramfs           |
-    | Fill maximum space and continue writing    |  Will display error  | Will continue writing |
-    |       Fixed Size                           |      Yes             |           No          |
-    |       Uses Swap                            |      Yes             |           No          |
-    |       Volatile Storage                     |      Yes             |           Yes         |
-
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		|       Experimentation                      |      Tmpfs           |       	Ramfs       |
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		| Fill maximum space and continue writing    |  Will display error  | Will continue writing |
+		|       Fixed Size                           |      Yes             |           No          |
+		|       Uses Swap                            |      Yes             |           No          |
+		|       Volatile Storage                     |      Yes             |           Yes         |
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
 Block Driver
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31/
@@ -556,15 +559,15 @@ Block Driver
 
 Ram Disk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         The problem is that the maximum size of a ramdisk, more specifically of size of memory that can be accessed via the
-         ramdisk driver is configured at compiletime, can be overwritten at boottime, but remains fixed once the kernel
-         is loaded into memory. The default value is probably measured in Megabytes. If I recall correctly the memory
-         for a ramdisk is reserved right when the driver is loaded, all ramdisks are the same size and there is are some
-         16 ramdisks by default. So not even you want a ramdisk size of 16G :-)
+	* The problem is that the maximum size of a ramdisk, more specifically of size of memory that can be accessed via the
+		ramdisk driver is configured at compiletime, can be overwritten at boottime, but remains fixed once the kernel
+		is loaded into memory. The default value is probably measured in Megabytes. If I recall correctly the memory
+		for a ramdisk is reserved right when the driver is loaded, all ramdisks are the same size and there is are some
+		16 ramdisks by default. So not even you want a ramdisk size of 16G :-)
 
-         As stated in the other answer, tmpfs is what you want to use. Further, you won't win a lot by having your entire OS in
-         a ramdisk/tmpfs. Just copy your builddir to a tmpfs and do your compiling then. You may have to ensure that all
-         temporary results are written to a location thats in the tmpfs as well.
+		As stated in the other answer, tmpfs is what you want to use. Further, you won't win a lot by having your entire OS in
+		a ramdisk/tmpfs. Just copy your builddir to a tmpfs and do your compiling then. You may have to ensure that all
+		temporary results are written to a location thats in the tmpfs as well.
 
      * http://lxr.free-electrons.com/source/drivers/block/rd.c?v=2.4.37
      * https://blulin.wordpress.com/2008/11/28/tips-to-create-ramdisk-in-a-linux-system/
@@ -698,3 +701,10 @@ The copy_from_user function (copy_from_user( to, from, n );)
 		calls __copy_from_user and eventually __copy_from_user_ll. From here, depending on architecture, a call is made
 		to copy from the user buffer to a kernel buffer with zeroing (of unavailable bytes). The optimized assembly
 		functions include the ability to manage.
+		
+spooling
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* whenever a running job finished, the operating system could load a new job from the disk into the 
+	now-empty partition and run it. This technique is called spooling (from Simultaneous Peripheral Operation On Line) 
+	and was also used for output.
+
