@@ -69,13 +69,6 @@ Macros
 		Note that subsys_initcall() can only be used by a built-in (statically linked) module. 
 			module_init can be used by either built-in or loadable modules
 
-Beagle bone black compilation steps
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	* http://elinux.org/Building_BBB_Kernel
-	For latest kernel Device tree is important so try to compile uImage with same
-	Try transferring the image to the BBB via TFTP
-	* https://linuxlink.timesys.com/docs/gsg/beaglebone_black
-
 Disable tty terminal console 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* file /etc/inittab 
@@ -410,7 +403,6 @@ Dts and Dtsi difference
 		- These files are final Device Tree
 		- dtc will process the dts files into a binary for the kernel
 		- specific syntax is used
-
 	* .dtsi files :
 		- SoC definitions go here
 		- These files are included files
@@ -418,20 +410,16 @@ Dts and Dtsi difference
 	* The linux kernel requires the entire description of the hardware, like which board it is booting(machine type), which
 		all devices it is using there addresses(device/bus addresses), there interrupts numbers(irq), mfp pins
 		configuration(pin muxing/gpios) also some board level information like memory size, kernel command line etc etc
-		…
-
 	* Before device tree, all these information use to be set in a huge cluster of board files. And, Information like
 		command line, memory size etc use to be passed by bootloaders as part of ATAGS through register R2(ARM).
 	Machine type use to be set separately in register R1(ARM). At this time each kernel compilation use to be for only one
 		specific chip an a specific board.
-
 	* So there was a long pending wish to compile the kernel for all ARM processors, and let the kernel somehow detect its
 		hardware and apply the right drivers as needed just like your PC.
 	* But how? On a PC, the initial registers are hardcoded, and the rest of the information is supplied by the BIOS. But
 		ARM processors don’t have a BIOS. The solution chosen was device tree, also referred to as Open Firmware
 		(abbreviated OF) or Flattened Device Tree (FDT). This is essentially a data structure in byte code format which
 		contains information that is helpful to the kernel when booting up.
-		
 	* The bootloader now loads two binaries: the kernel image and the DTB.
 	* DTB is the device tree blob. The bootloader passes the DTB address through R2 instead of ATAGS and R1 register is not
 		required now.
@@ -516,6 +504,11 @@ Beagle bone black (BBB) Link
     * http://elinux.org/BeagleBoardBeginners
     * https://blackfin.uclinux.org/doku.php?id=bootloaders:u-boot:testing
     * https://github.com/beagleboard/linux/releases (Kernels releases)
+    Beagle bone black compilation steps
+		* http://elinux.org/Building_BBB_Kernel
+		For latest kernel Device tree is important so try to compile uImage with same
+		Try transferring the image to the BBB via TFTP
+		* https://linuxlink.timesys.com/docs/gsg/beaglebone_black
 
 Ram
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
