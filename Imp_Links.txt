@@ -1,6 +1,29 @@
 Warning: 
 	Links can be changed or destroyed by the owner or due to some other issues. Please don't blame me.
 
+Make
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	* Phony Targets
+		A phony target is one that is not really the name of a file; rather it is just a name for a recipe to be executed 
+		when you make an explicit request. There are two reasons to use a phony target: to avoid a conflict with a file of 
+		the same name, and to improve performance.
+			.PHONY: cleanall cleanobj cleandiff
+			cleanall : cleanobj cleandiff
+			    rm program
+			cleanobj :
+			    rm *.o
+			cleandiff :
+			    rm *.diff
+	* Rules without Recipes or Prerequisites
+		If a rule has no prerequisites or recipe, and the target of the rule is a nonexistent file, 
+		then make imagines this target to have been updated whenever its rule is run. 
+		This implies that all targets depending on this one will always have their recipe run. 
+			clean: FORCE
+        		rm $(objects)
+			FORCE:
+		Here the target ‘FORCE’ satisfies the special conditions, so the target clean that depends on it is forced to run its recipe.
+		using ‘FORCE’ this way has the same results as using ‘.PHONY: clean’. 
+		
 IPC
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://www.rapidprogramming.com/questions-answers/message-queues-and-shared-memory-differencesmq-vs-shared-memory-1569
@@ -245,15 +268,6 @@ Error (fatal error: sys/types.h: No such file or directory)
 	* Cross verify that you are compiling as a module or normal c program using gcc
 	gcc file_name.c will not give error
 
-Error (function declaration isn’t a prototype)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	* In C int foo() and int foo(void) are different functions. 
-	int foo() accepts an arbitrary number of arguments, while int foo(void) accepts 0 arguments.
-	
-Errro (Undefined reference to `pow' and `floor')
-	* gcc file_name.c -lm
-	This will tell gcc to link your code against the math lib. Just be sure to put the flag after the objects you want to link. 
-
 Vitual box open error (This problem came when new kernel version is compiled)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	$sudo virtualbox
@@ -488,9 +502,11 @@ Rasberrypi
 	* Read touch calibration
 	* http://linuxseekernel.blogspot.in/2014/05/platform-device-driver-practical.html (Convert Platform device module into kernel module)
     
-OS
+OS/Kernel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     * https://www.safaribooksonline.com/library/view/understanding-the-linux/0596005652/ch04.html
+    * git clone git://github.com/minix3/minix (Minix Source Code)
+    * http://kernelnewbies.org/LinuxVersions (Kernel Versions Changes)
 
 Ext2 partition layout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
