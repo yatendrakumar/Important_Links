@@ -588,6 +588,9 @@ Ram Disk
 Jtag Setup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     * http://sysprogs.com/VisualKernel/tutorials/raspberry/jtagsetup/
+    * https://linuxlink.timesys.com/docs/HOWTO_debug_a_board_with_a_lauterbach_jtag_probe_using_timestorm
+    * http://www.lauterbach.com/pdfnew/training_rtos_linux.pdf
+    * http://www2.lauterbach.com/pdf/debugger_arm.pdf
 
 Ram Disk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
