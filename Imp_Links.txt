@@ -122,7 +122,7 @@ TFTP server setup
 		sudo apt-get install tftpd-hpa
 		sudo apt-get install openbsd-inetd
 	* vim /etc/inetd.conf
-		tftp dgram udp wait root /usr/sbin/in.tftpd /usr/sbin/in.tftpd -s /var/lib/tftpboot
+		tftp dgram udp wait root /usr/sbin/in.tftpd /usr/sbin/in.tftpd -s /tftpboot
     (or)
 	* sudo vim /etc/default/tftpd-hpa
 		RUN_DAEMON=”yes”
@@ -516,6 +516,8 @@ Ext2 partition layout
 Beagle bone black (BBB) Link
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     * https://eewiki.net/display/linuxonarm/BeagleBone+Black#BeagleBoneBlack-ARMCrossCompiler:GCC
+    	This will help in getting linux versions to pull
+    	git checkout origin/ti-linux-rt-4.4.y -b tmp
     * http://www.slimlogic.co.uk/2011/05/omap3-sd-booting/ (Flashing image script)
     * http://elinux.org/BeagleBoardBeginners
     * https://blackfin.uclinux.org/doku.php?id=bootloaders:u-boot:testing
@@ -525,6 +527,7 @@ Beagle bone black (BBB) Link
 		For latest kernel Device tree is important so try to compile uImage with same
 		Try transferring the image to the BBB via TFTP
 		* https://linuxlink.timesys.com/docs/gsg/beaglebone_black
+	* https://github.com/RobertCNelson/linux-dev
 
 Ram
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -585,6 +588,9 @@ Ram Disk
 Jtag Setup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     * http://sysprogs.com/VisualKernel/tutorials/raspberry/jtagsetup/
+    * https://linuxlink.timesys.com/docs/HOWTO_debug_a_board_with_a_lauterbach_jtag_probe_using_timestorm
+    * http://www.lauterbach.com/pdfnew/training_rtos_linux.pdf
+    * http://www2.lauterbach.com/pdf/debugger_arm.pdf
 
 Ram Disk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
