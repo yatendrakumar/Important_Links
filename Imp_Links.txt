@@ -507,6 +507,9 @@ OS/Kernel
     * https://www.safaribooksonline.com/library/view/understanding-the-linux/0596005652/ch04.html
     * git clone git://github.com/minix3/minix (Minix Source Code)
     * http://kernelnewbies.org/LinuxVersions (Kernel Versions Changes)
+    * http://wiki.minix3.org/doku.php?id=www:download:releasenotes-3.3.0
+    	* http://wiki.minix3.org/doku.php?id=www:download:start (Download link)
+    	* http://wiki.minix3.org/doku.php?id=developersguide:minixonarm (Build for Beagle board platforms)
 
 Ext2 partition layout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -591,6 +594,8 @@ Jtag Setup
     * https://linuxlink.timesys.com/docs/HOWTO_debug_a_board_with_a_lauterbach_jtag_probe_using_timestorm
     * http://www.lauterbach.com/pdfnew/training_rtos_linux.pdf
     * http://www2.lauterbach.com/pdf/debugger_arm.pdf
+    * If not getting print in tty terminal for rasp board 
+    	please check Do you have console=ttyAMA0,115200 in your /boot/cmdline.txt?
 
 Ram Disk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
