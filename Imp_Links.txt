@@ -24,6 +24,10 @@ Make
 		Here the target ‘FORCE’ satisfies the special conditions, so the target clean that depends on it is forced to run its recipe.
 		using ‘FORCE’ this way has the same results as using ‘.PHONY: clean’. 
 		
+PThread
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	https://computing.llnl.gov/tutorials/pthreads/
+
 IPC
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	* http://www.rapidprogramming.com/questions-answers/message-queues-and-shared-memory-differencesmq-vs-shared-memory-1569
